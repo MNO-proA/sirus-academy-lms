@@ -19,7 +19,10 @@ const CourseSchema = new mongoose.Schema({
   title: String,
   category: String,
   level: String,
-  primaryLanguage: String,
+  primaryLanguage: {
+    type: String,
+    default: "english", 
+  },
   subtitle: String,
   description: String,
   image: String,
