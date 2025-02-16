@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { courseLandingPageFormControls } from "@/config";
 import { InstructorContext } from "@/context/instructor-context";
 import { useContext } from "react";
+import CourseSettings from "./course-settings";
 
 function CourseLanding() {
   const { courseLandingFormData, setCourseLandingFormData } =
@@ -10,9 +11,10 @@ function CourseLanding() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Course Landing Page</CardTitle>
+        <CardTitle>Course Details</CardTitle>
       </CardHeader>
       <CardContent>
+        <CourseSettings/>
         <FormControls
           formControls={courseLandingPageFormControls}
           formData={courseLandingFormData}

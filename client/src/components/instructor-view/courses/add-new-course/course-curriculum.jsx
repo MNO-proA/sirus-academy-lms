@@ -20,9 +20,20 @@ import {
   mediaDeleteService,
   mediaUploadService,
 } from "@/services";
-import { Upload } from "lucide-react";
-import { useContext, useRef } from "react";
+// import { Upload } from "lucide-react";
+import { useContext, useRef, useState } from "react";
 import ContentPreview from "@/components/content-preview";
+import { Loader } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 function CourseCurriculum() {
   const {
@@ -33,6 +44,55 @@ function CourseCurriculum() {
     mediaUploadProgressPercentage,
     setMediaUploadProgressPercentage,
   } = useContext(InstructorContext);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteConfirmation = (index) => {
+    setSelectedIndex(index);
+    setDeleteDialogOpen(true);
+  };
+
+  const getDeleteDialogTitle = (index) => {
+    const lecture = courseCurriculumFormData[index];
+    return lecture.title.trim() 
+      ? `Delete "${lecture.title}"?`
+      : `Delete Lecture ${index + 1}?`;
+  };
+
+  const getDeleteDialogDescription = (index) => {
+    const lecture = courseCurriculumFormData[index];
+    return lecture.title.trim()
+      ? `Are you sure you want to delete "${lecture.title}"? This action cannot be undone.`
+      : `Are you sure you want to delete Lecture ${index + 1}? This action cannot be undone.`;
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedIndex === null) return;
+    
+    setIsDeleting(true);
+    const currentLecture = courseCurriculumFormData[selectedIndex];
+
+    try {
+      if (currentLecture.type === "video" && currentLecture.public_id) {
+        await mediaDeleteService(currentLecture.public_id);
+      }
+
+      // Create new array without the deleted item
+      const updatedFormData = courseCurriculumFormData.filter((_, index) => index !== selectedIndex);
+      
+      // Update state
+      setCourseCurriculumFormData(updatedFormData);
+    } catch (error) {
+      console.error("Error deleting lecture:", error);
+    } finally {
+      setIsDeleting(false);
+      setDeleteDialogOpen(false);
+      setSelectedIndex(null);
+    }
+  };
+
 
   const bulkUploadInputRef = useRef(null);
   // +++++++++++++++++++++++++++++++++++++++++
@@ -102,7 +162,39 @@ function CourseCurriculum() {
     setCourseCurriculumFormData(cpyCourseCurriculumFormData);
   }
 
+  // async function handleSingleLectureUpload(event, currentIndex) {
+  //   const selectedFile = event.target.files[0];
+
+  //   if (selectedFile) {
+  //     const videoFormData = new FormData();
+  //     videoFormData.append("file", selectedFile);
+
+  //     try {
+  //       setMediaUploadProgress(true);
+  //       const response = await mediaUploadService(
+  //         videoFormData,
+  //         setMediaUploadProgressPercentage
+  //       );
+  //       if (response.success) {
+  //         let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+  //         cpyCourseCurriculumFormData[currentIndex] = {
+  //           ...cpyCourseCurriculumFormData[currentIndex],
+  //           videoUrl: response?.data?.url,
+  //           public_id: response?.data?.public_id,
+  //         };
+  //         setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+  //         setMediaUploadProgress(false);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //       setMediaUploadProgress(false);
+  //     }
+  //   }
+  // }
+
+  // In your handleSingleLectureUpload function, update it to:
   async function handleSingleLectureUpload(event, currentIndex) {
+    // Add currentIndex parameter
     const selectedFile = event.target.files[0];
 
     if (selectedFile) {
@@ -110,78 +202,39 @@ function CourseCurriculum() {
       videoFormData.append("file", selectedFile);
 
       try {
-        setMediaUploadProgress(true);
-        const response = await mediaUploadService(
-          videoFormData,
-          setMediaUploadProgressPercentage
-        );
+        let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+        cpyCourseCurriculumFormData[currentIndex] = {
+          ...cpyCourseCurriculumFormData[currentIndex],
+          isUploading: true,
+        };
+        setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+
+        const response = await mediaUploadService(videoFormData);
+
         if (response.success) {
-          let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+          cpyCourseCurriculumFormData = [...courseCurriculumFormData];
           cpyCourseCurriculumFormData[currentIndex] = {
             ...cpyCourseCurriculumFormData[currentIndex],
             videoUrl: response?.data?.url,
             public_id: response?.data?.public_id,
+            isUploading: false,
+            uploadError: false,
           };
           setCourseCurriculumFormData(cpyCourseCurriculumFormData);
-          setMediaUploadProgress(false);
         }
       } catch (error) {
         console.log(error);
-        setMediaUploadProgress(false);
+        let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+        cpyCourseCurriculumFormData[currentIndex] = {
+          ...cpyCourseCurriculumFormData[currentIndex],
+          isUploading: false,
+          uploadError: true,
+        };
+        setCourseCurriculumFormData(cpyCourseCurriculumFormData);
       }
     }
   }
 
-  async function handleMediaBulkUpload(event) {
-    const selectedFiles = Array.from(event.target.files);
-    if (!selectedFiles.length) return;
-
-    const bulkFormData = new FormData();
-    selectedFiles.forEach((fileItem) => bulkFormData.append("files", fileItem));
-
-    try {
-      setMediaUploadProgress(true);
-      const response = await mediaBulkUploadService(
-        bulkFormData,
-        setMediaUploadProgressPercentage
-      );
-
-      if (response?.success) {
-        const currentFormData = [...courseCurriculumFormData];
-        const newLectures = response.data.map((item, index) => ({
-          videoUrl: item?.url,
-          public_id: item?.public_id,
-          title: `Lecture ${currentFormData.length + index + 1}`,
-          freePreview: false,
-          type: "video",
-        }));
-
-        setCourseCurriculumFormData([...currentFormData, ...newLectures]);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setMediaUploadProgress(false);
-      if (bulkUploadInputRef.current) {
-        bulkUploadInputRef.current.value = "";
-      }
-    }
-  }
-
-  function handleOpenBulkUploadDialog() {
-    bulkUploadInputRef.current?.click();
-  }
-
-  function areAllCourseCurriculumFormDataObjectsEmpty(arr) {
-    return arr.every((obj) => {
-      return Object.entries(obj).every(([key, value]) => {
-        if (typeof value === "boolean") {
-          return true;
-        }
-        return value === "";
-      });
-    });
-  }
 
   function isCourseCurriculumFormDataValid() {
     return courseCurriculumFormData.every((item) => {
@@ -260,7 +313,7 @@ function CourseCurriculum() {
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <CardTitle>Create Course Curriculum</CardTitle>
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <Input
             type="file"
             ref={bulkUploadInputRef}
@@ -270,15 +323,15 @@ function CourseCurriculum() {
             id="bulk-media-upload"
             onChange={handleMediaBulkUpload}
           />
-          {/* <Button
+          <Button
             variant="outline"
             className="cursor-pointer"
             onClick={handleOpenBulkUploadDialog}
           >
             <Upload className="w-4 h-5 mr-2" />
             Bulk Upload
-          </Button> */}
-        </div>
+          </Button>
+        </div> */}
       </CardHeader>
       <CardContent>
         {/* <Button
@@ -290,12 +343,14 @@ function CourseCurriculum() {
         {mediaUploadProgress && (
           <MediaProgressbar
             isMediaUploading={mediaUploadProgress}
-            progress={mediaUploadProgressPercentage}
           />
         )}
         <div className="mt-4 space-y-4">
           {courseCurriculumFormData.map((curriculumItem, index) => (
-            <div key={index} className="border p-5 rounded-md">
+            <div key={index} className="border p-5 rounded-md"    style={{
+              opacity: isDeleting && selectedIndex === index ? 0 : 1,
+              transform: isDeleting && selectedIndex === index ? 'translateX(-100%)' : 'translateX(0)',
+            }}>
               <div className="flex justify-between items-center mb-4">
                 <div className="flex sm:gap-1 gap-2">
                   <Button
@@ -307,7 +362,7 @@ function CourseCurriculum() {
                     Add Lecture
                   </Button>
                   <Button
-                    onClick={() => handleDeleteLecture(index)}
+                    onClick={() => handleDeleteConfirmation(index)}
                     variant="destructive"
                   >
                     Delete Lecture
@@ -370,14 +425,49 @@ function CourseCurriculum() {
                         </Button>
                       </div>
                     ) : (
-                      <Input
-                        type="file"
-                        accept="video/*"
-                        onChange={(event) =>
-                          handleSingleLectureUpload(event, index)
-                        }
-                        className="mb-4"
-                      />
+                      <div className="relative">
+                        {curriculumItem.isUploading ? (
+                          <div className="flex justify-center items-center my-4">
+                            <Loader className="animate-spin h-8 w-8 text-blue-600" />
+                          </div>
+                        ) : (
+                          <>
+                            <Input
+                              type="file"
+                              accept="video/*"
+                              onChange={(event) =>
+                                handleSingleLectureUpload(event, index)
+                              }
+                              className="mb-4"
+                            />
+                            {curriculumItem.uploadError && (
+                              <div className="mt-2">
+                                <p className="text-red-500 mb-2">
+                                  Upload failed. Please try again.
+                                </p>
+                                {/* <Button
+                                  variant="outline"
+                                  onClick={() => {
+                                    let cpyCourseCurriculumFormData = [
+                                      ...courseCurriculumFormData,
+                                    ];
+                                    cpyCourseCurriculumFormData[index] = {
+                                      // Use index instead of currentIndex
+                                      ...cpyCourseCurriculumFormData[index],
+                                      uploadError: false,
+                                    };
+                                    setCourseCurriculumFormData(
+                                      cpyCourseCurriculumFormData
+                                    );
+                                  }}
+                                >
+                                  Retry Upload
+                                </Button> */}
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
                     )
                   ) : (
                     <div>
@@ -402,6 +492,27 @@ function CourseCurriculum() {
             </div>
           ))}
         </div>
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {selectedIndex !== null && getDeleteDialogTitle(selectedIndex)}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {selectedIndex !== null && getDeleteDialogDescription(selectedIndex)}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmDelete}>
+                {isDeleting ? (
+                  <Loader className="w-4 h-4 animate-spin mr-2" />
+                ) : null}
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   );

@@ -1,11 +1,11 @@
+
+// import { useContext, useEffect, useState } from "react";
 // import { Button } from "@/components/ui/button";
 // import {
 //   Dialog,
 //   DialogContent,
 //   DialogDescription,
 //   DialogHeader,
-//   // DialogOverlay,
-//   // DialogPortal,
 //   DialogTitle,
 // } from "@/components/ui/dialog";
 // import { Label } from "@/components/ui/label";
@@ -26,8 +26,8 @@
 //   Play,
 //   Link,
 //   Youtube,
+//   Loader2,
 // } from "lucide-react";
-// import { useContext, useEffect, useState } from "react";
 // import Confetti from "react-confetti";
 // import { useNavigate, useParams } from "react-router-dom";
 // import ContentPreview from "@/components/content-preview";
@@ -39,13 +39,29 @@
 //     useContext(StudentContext);
 //   const [lockCourse, setLockCourse] = useState(false);
 //   const [currentLecture, setCurrentLecture] = useState(null);
-//   const [showCourseCompleteDialog, setShowCourseCompleteDialog] =
-//     useState(false);
+//   const [showCourseCompleteDialog, setShowCourseCompleteDialog] = useState(false);
 //   const [showConfetti, setShowConfetti] = useState(false);
-//   const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+//   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+//   const [isLoading, setIsLoading] = useState(false);
 //   const { id } = useParams();
 
-//   // Safe version of isAlreadyViewed that handles null/undefined
+//   const isMobile = window.innerWidth <= 768;
+
+//   useEffect(() => {
+//     const handleResize = () => {
+//       if (window.innerWidth > 768) {
+//         setIsSideBarOpen(true);
+//       } else {
+//         setIsSideBarOpen(false);
+//       }
+//     };
+
+//     window.addEventListener('resize', handleResize);
+//     handleResize();
+
+//     return () => window.removeEventListener('resize', handleResize);
+//   }, []);
+
 //   const isAlreadyViewed = currentLecture?._id
 //     ? studentCurrentCourseProgress?.progress?.find(
 //         (progressItem) => progressItem?.lectureId === currentLecture._id
@@ -128,7 +144,12 @@
 
 //   function handleLectureClick(lecture) {
 //     if (lecture) {
+//       setIsLoading(true);
 //       setCurrentLecture(lecture);
+//       if (isMobile) {
+//         setIsSideBarOpen(false);
+//       }
+//       setTimeout(() => setIsLoading(false), 2500);
 //     }
 //   }
 
@@ -169,18 +190,11 @@
 //     }
 //   }, [id]);
 
-//   // useEffect(() => {
-//   //   if (currentLecture?.progressValue === 1) updateCourseProgress();
-//   // }, [currentLecture]);
 //   useEffect(() => {
 //     if (currentLecture?.progressValue === 1) {
 //       updateCourseProgress();
 //     }
 //   }, [currentLecture?.progressValue]);
-
-//   // useEffect(() => {
-//   //   if (showConfetti) setTimeout(() => setShowConfetti(false), 15000);
-//   // }, [showConfetti]);
 
 //   useEffect(() => {
 //     let timeoutId;
@@ -196,15 +210,13 @@
 
 //   if (!currentLecture) return null;
 
-//   console.log(currentLecture, "currentLecture");
-
 //   return (
 //     <div className="flex flex-col h-screen bg-[#1c1d1f] text-white">
 //       {showConfetti && <Confetti />}
 //       <div className="flex items-center justify-between p-4 bg-[#1c1d1f] border-b border-gray-700">
 //         <div className="flex items-center space-x-4">
 //           <Button
-//             onClick={() => navigate("/student-courses")}
+//             onClick={() => navigate("/academy/student-courses")}
 //             className="text-black"
 //             variant="ghost"
 //             size="sm"
@@ -227,35 +239,41 @@
 //       <div className="flex flex-1 overflow-hidden">
 //         <div
 //           className={`flex-1 ${
-//             isSideBarOpen ? "mr-[400px]" : ""
+//             isSideBarOpen ? "md:mr-[400px]" : ""
 //           } transition-all duration-300 overflow-y-auto`}
 //         >
-//           <div className="min-h-min">
-//             {currentLecture?.type === "video" ? (
-//               <VideoPlayer
-//                 width="100%"
-//                 height="500px"
-//                 url={currentLecture?.videoUrl}
-//                 onComplete={() => updateCourseProgress()}
-//                 progressData={currentLecture}
-//                 isAlreadyViewed={isAlreadyViewed}
-//               />
-//             ) : currentLecture?.type === "url" ? (
-//               <iframe
-//                 src={currentLecture?.videoUrl}
-//                 width="100%"
-//                 height="500px"
-//                 title="Current Lecture"
-//               />
-//             ) : currentLecture?.type === "youtube" ? (
-//               <ContentPreview
-//                 type={currentLecture?.type}
-//                 url={currentLecture?.videoUrl}
-//                 width="100%"
-//                 height="500px"
-//               />
-//             ) : null}
-//           </div>
+//           {isLoading ? (
+//             <div className="flex items-center justify-center h-[500px]">
+//               <Loader2 className="h-8 w-8 animate-spin" />
+//             </div>
+//           ) : (
+//             <div className="min-h-min">
+//               {currentLecture?.type === "video" ? (
+//                 <VideoPlayer
+//                   width="100%"
+//                   height="500px"
+//                   url={currentLecture?.videoUrl}
+//                   onComplete={() => updateCourseProgress()}
+//                   progressData={currentLecture}
+//                   isAlreadyViewed={isAlreadyViewed}
+//                 />
+//               ) : currentLecture?.type === "url" ? (
+//                 <iframe
+//                   src={currentLecture?.videoUrl}
+//                   width="100%"
+//                   height="500px"
+//                   title="Current Lecture"
+//                 />
+//               ) : currentLecture?.type === "youtube" ? (
+//                 <ContentPreview
+//                   type={currentLecture?.type}
+//                   url={currentLecture?.videoUrl}
+//                   width="100%"
+//                   height="500px"
+//                 />
+//               ) : null}
+//             </div>
+//           )}
 
 //           <div className="p-6 bg-[#1c1d1f]">
 //             <h2 className="text-2xl font-bold mb-4">{currentLecture?.title}</h2>
@@ -281,7 +299,7 @@
 //           </div>
 //         </div>
 //         <div
-//           className={`fixed top-[64px] right-0 bottom-0 w-[400px] bg-[#1c1d1f] border-l border-gray-700 transition-all duration-300 ${
+//           className={`fixed top-[64px] right-0 bottom-0 w-full md:w-[400px] bg-[#1c1d1f] border-l border-gray-700 transition-all duration-300 ${
 //             isSideBarOpen ? "translate-x-0" : "translate-x-full"
 //           }`}
 //         >
@@ -334,7 +352,7 @@
 //               <ScrollArea className="h-full">
 //                 <div className="p-4">
 //                   <h2 className="text-xl font-bold mb-4">About this course</h2>
-//                   <p className="text-gray-400">
+//                   <p className="text-white text-xs">
 //                     {studentCurrentCourseProgress?.courseDetails?.description}
 //                   </p>
 //                 </div>
@@ -374,7 +392,8 @@
 // }
 
 // export default StudentViewCourseProgressPage;
-import React, { useContext, useEffect, useState } from "react";
+
+import { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -418,6 +437,8 @@ function StudentViewCourseProgressPage() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMarkingComplete, setIsMarkingComplete] = useState(false);
+  const [isRewatching, setIsRewatching] = useState(false);
   const { id } = useParams();
 
   const isMobile = window.innerWidth <= 768;
@@ -503,6 +524,7 @@ function StudentViewCourseProgressPage() {
         return;
       }
 
+      setIsMarkingComplete(true);
       const response = await markLectureAsViewedService(
         auth.user._id,
         studentCurrentCourseProgress.courseDetails._id,
@@ -510,10 +532,12 @@ function StudentViewCourseProgressPage() {
       );
 
       if (response?.success) {
-        fetchCurrentCourseProgress();
+        await fetchCurrentCourseProgress();
       }
     } catch (error) {
       console.error("Error updating course progress:", error);
+    } finally {
+      setIsMarkingComplete(false);
     }
   }
 
@@ -543,6 +567,7 @@ function StudentViewCourseProgressPage() {
         return;
       }
 
+      setIsRewatching(true);
       const response = await resetCourseProgressService(
         auth.user._id,
         studentCurrentCourseProgress.courseDetails._id
@@ -556,6 +581,8 @@ function StudentViewCourseProgressPage() {
       }
     } catch (error) {
       console.error("Error resetting course:", error);
+    } finally {
+      setIsRewatching(false);
     }
   }
 
@@ -592,7 +619,7 @@ function StudentViewCourseProgressPage() {
         <div className="flex items-center space-x-4">
           <Button
             onClick={() => navigate("/academy/student-courses")}
-            className="text-black"
+            className="text-black hover:scale-105 transition-transform duration-200"
             variant="ghost"
             size="sm"
           >
@@ -603,7 +630,10 @@ function StudentViewCourseProgressPage() {
             {studentCurrentCourseProgress?.courseDetails?.title}
           </h1>
         </div>
-        <Button onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
+        <Button 
+          onClick={() => setIsSideBarOpen(!isSideBarOpen)}
+          className="hover:scale-105 transition-transform duration-200"
+        >
           {isSideBarOpen ? (
             <ChevronRight className="h-5 w-5" />
           ) : (
@@ -656,18 +686,18 @@ function StudentViewCourseProgressPage() {
               currentLecture?.type === "youtube") && (
               <Button
                 onClick={handleMarkAsComplete}
-                disabled={
-                  studentCurrentCourseProgress?.progress?.find(
-                    (item) => item.lectureId === currentLecture._id
-                  )?.viewed
-                }
-                className="flex items-center gap-2"
+                disabled={isMarkingComplete || isAlreadyViewed}
+                className="flex items-center gap-2 hover:scale-105 transition-transform duration-200"
               >
-                <Check className="h-4 w-4" />
-                {studentCurrentCourseProgress?.progress?.find(
-                  (item) => item.lectureId === currentLecture._id
-                )?.viewed
+                {isMarkingComplete ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
+                {isAlreadyViewed
                   ? "Completed"
+                  : isMarkingComplete
+                  ? "Marking as Complete..."
                   : "Mark as Complete"}
               </Button>
             )}
@@ -682,13 +712,13 @@ function StudentViewCourseProgressPage() {
             <TabsList className="grid bg-[#1c1d1f] w-full grid-cols-2 p-0 h-14">
               <TabsTrigger
                 value="content"
-                className="text-black rounded-none h-full"
+                className="text-black rounded-none h-full hover:bg-gray-100 transition-colors duration-200"
               >
                 Course Content
               </TabsTrigger>
               <TabsTrigger
                 value="overview"
-                className="text-black rounded-none h-full"
+                className="text-black rounded-none h-full hover:bg-gray-100 transition-colors duration-200"
               >
                 Overview
               </TabsTrigger>
@@ -699,7 +729,9 @@ function StudentViewCourseProgressPage() {
                   {studentCurrentCourseProgress?.courseDetails?.curriculum.map(
                     (item) => (
                       <div
-                        className="flex items-center space-x-2 text-sm text-white font-bold cursor-pointer hover:bg-gray-800 p-2 rounded"
+                        className={`flex items-center space-x-2 text-sm text-white font-bold cursor-pointer hover:bg-gray-800 p-2 rounded transition-all duration-200 hover:scale-102 ${
+                          currentLecture?._id === item._id ? "bg-gray-800 scale-102" : ""
+                        }`}
                         key={item._id}
                         onClick={() => handleLectureClick(item)}
                       >
@@ -727,7 +759,7 @@ function StudentViewCourseProgressPage() {
               <ScrollArea className="h-full">
                 <div className="p-4">
                   <h2 className="text-xl font-bold mb-4">About this course</h2>
-                  <p className="text-gray-400">
+                  <p className="text-white text-xs">
                     {studentCurrentCourseProgress?.courseDetails?.description}
                   </p>
                 </div>
@@ -753,10 +785,26 @@ function StudentViewCourseProgressPage() {
             <DialogDescription className="flex flex-col gap-3">
               <Label>You have completed the course</Label>
               <div className="flex flex-row gap-3">
-                <Button onClick={() => navigate("/student-courses")}>
+                <Button 
+                  onClick={() => navigate("/academy/student-courses")}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
                   My Courses Page
                 </Button>
-                <Button onClick={handleRewatchCourse}>Rewatch Course</Button>
+                <Button 
+                  onClick={handleRewatchCourse}
+                  disabled={isRewatching}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  {isRewatching ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      Resetting Course...
+                    </>
+                  ) : (
+                    "Rewatch Course"
+                  )}
+                </Button>
               </div>
             </DialogDescription>
           </DialogHeader>

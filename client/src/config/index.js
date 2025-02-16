@@ -50,18 +50,18 @@ export const initialSignUpFormData = {
   password: "",
 };
 
-export const languageOptions = [
-  { id: "english", label: "English" },
-  { id: "spanish", label: "Spanish" },
-  { id: "french", label: "French" },
-  { id: "german", label: "German" },
-  { id: "chinese", label: "Chinese" },
-  { id: "japanese", label: "Japanese" },
-  { id: "korean", label: "Korean" },
-  { id: "portuguese", label: "Portuguese" },
-  { id: "arabic", label: "Arabic" },
-  { id: "russian", label: "Russian" },
-];
+// export const languageOptions = [
+//   { id: "english", label: "English" },
+//   { id: "spanish", label: "Spanish" },
+//   { id: "french", label: "French" },
+//   { id: "german", label: "German" },
+//   { id: "chinese", label: "Chinese" },
+//   { id: "japanese", label: "Japanese" },
+//   { id: "korean", label: "Korean" },
+//   { id: "portuguese", label: "Portuguese" },
+//   { id: "arabic", label: "Arabic" },
+//   { id: "russian", label: "Russian" },
+// ];
 
 export const courseLevelOptions = [
   { id: "beginner", label: "Beginner" },
@@ -72,15 +72,15 @@ export const courseLevelOptions = [
 export const courseCategories = [
   { id: "devops", label: "DevOps" },
   { id: "cloud-computing", label: "Cloud Computing" },
-  { id: "web-development", label: "Web Development" },
-  { id: "backend-development", label: "Backend Development" },
-  { id: "data-science", label: "Data Science" },
-  { id: "machine-learning", label: "Machine Learning" },
-  { id: "artificial-intelligence", label: "Artificial Intelligence" },
-  { id: "cyber-security", label: "Cyber Security" },
-  { id: "mobile-development", label: "Mobile Development" },
-  { id: "game-development", label: "Game Development" },
-  { id: "software-engineering", label: "Software Engineering" },
+  // { id: "web-development", label: "Web Development" },
+  // { id: "backend-development", label: "Backend Development" },
+  // { id: "data-science", label: "Data Science" },
+  // { id: "machine-learning", label: "Machine Learning" },
+  // { id: "artificial-intelligence", label: "Artificial Intelligence" },
+  // { id: "cyber-security", label: "Cyber Security" },
+  // { id: "mobile-development", label: "Mobile Development" },
+  // { id: "game-development", label: "Game Development" },
+  // { id: "software-engineering", label: "Software Engineering" },
 ];
 
 export const courseLandingPageFormControls = [
@@ -107,14 +107,14 @@ export const courseLandingPageFormControls = [
     placeholder: "",
     options: courseLevelOptions,
   },
-  {
-    name: "primaryLanguage",
-    label: "Primary Language",
-    componentType: "select",
-    type: "text",
-    placeholder: "",
-    options: languageOptions,
-  },
+  // {
+  //   name: "primaryLanguage",
+  //   label: "Primary Language",
+  //   componentType: "select",
+  //   type: "text",
+  //   placeholder: "",
+  //   options: languageOptions,
+  // },
   {
     name: "subtitle",
     label: "Subtitle",
@@ -155,7 +155,7 @@ export const courseLandingInitialFormData = {
   title: "",
   category: "",
   level: "",
-  primaryLanguage: "",
+  // primaryLanguage: "",
   subtitle: "",
   description: "",
   pricing: "",
@@ -181,8 +181,16 @@ export const sortOptions = [
   { id: "title-ztoa", label: "Title: Z to A" },
 ];
 
+export const courseTerms = [
+      { id: "summer", label: "Summer" },
+      { id: "fall", label: "Fall" },
+      { id: "spring", label: "Spring" },
+      { id: "bootcamp", label: "Bootcamp" }
+    ]
+
 export const filterOptions = {
   category: courseCategories,
   level: courseLevelOptions,
-  primaryLanguage: languageOptions,
+  // primaryLanguage: languageOptions,
+  term: courseTerms
 };
