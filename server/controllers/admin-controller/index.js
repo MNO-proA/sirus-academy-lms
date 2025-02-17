@@ -9,7 +9,11 @@ const getAllUsers = async (req, res) => {
       });
     }
 
-    const users = await User.find({}, { userEmail: 1, role: 1, _id: 1 });
+    const users = await User.find(
+      { userEmail: { $ne: "admin@gmail.com" } }, 
+      { userEmail: 1, role: 1, _id: 1 }
+    );
+
     res.status(200).json({
       success: true,
       data: users
