@@ -159,13 +159,13 @@ function StudentViewCoursesPage() {
   return (
     <div className="pt-32 container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">
-        <Link 
+        {/* <Link 
     to="/academy/home" 
     className="flex items-center group hover:text-transparent hover:bg-gradient-to-r hover:from-amber-600 hover:to-zinc-900 hover:bg-clip-text transition-all duration-300"
-  >
+  > */}
     <span className="group-hover:hidden">All Courses</span>
-    <span className="hidden group-hover:inline">Go Back Home</span>
-  </Link>
+    {/* <span className="hidden group-hover:inline">Go Back Home</span>
+  </Link> */}
         {/* All Courses */}
       </h1>
       <div className="flex flex-col md:flex-row gap-4">

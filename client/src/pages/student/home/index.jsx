@@ -87,7 +87,7 @@ const StudentHomePage = () => {
         transition={{ duration: 0.6 }}
         className="flex flex-col lg:flex-row items-center justify-between py-8 px-4 lg:px-8"
       >
-        <div className="lg:w-1/2 lg:pr-12">
+        <div className="lg:w-1/2 lg:pr-12 mb-5 lg:mb-5">
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -109,10 +109,10 @@ const StudentHomePage = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
-          className="lg:w-full mb-8 lg:mb-0"
+          className="lg:w-full mb-5 lg:mb-5"
         >
           <img
-            src={banner}
+            src='/images/svmwd.jpg'
             width={600}
             height={400}
             className="w-full h-auto rounded-lg shadow-lg transform transition-transform hover:scale-105 duration-300"
@@ -154,7 +154,7 @@ const StudentHomePage = () => {
         </motion.div>
       </section> */}
 
-      <section ref={ref} className="py-12 px-4 lg:px-8">
+      <section ref={ref} className="py-8 px-4 lg:px-8">
         <motion.h2 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

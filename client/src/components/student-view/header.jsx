@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, TvMinimalPlay, LogOut, BookOpen, Menu, X, User } from "lucide-react";
+import { GraduationCap, TvMinimalPlay, LogOut, BookOpen, Menu, X, User, Home } from "lucide-react";
 import { Button } from "../ui/button";
 import { AuthContext } from "@/context/auth-context";
 import Logo from "../../../public/logo-h.png"
@@ -18,6 +18,12 @@ function StudentViewCommonHeader() {
   };
 
   const navItems = [
+    {
+      label: "Home",
+      icon: <Home className="w-4 h-4" />,
+      onClick: () => navigate("/academy/home"),
+      highlight: location.pathname.includes("/academy/home"),
+    },
     {
       label: "Explore Courses",
       icon: <BookOpen className="w-4 h-4" />,

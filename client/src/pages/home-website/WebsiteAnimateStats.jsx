@@ -72,7 +72,7 @@ const BackgroundSlider = () => {
       setCurrentIndex((prevIndex) => 
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
-    }, 3000);
+    }, 9000);
 
     return () => clearInterval(timer);
   }, []);
@@ -97,7 +97,6 @@ const BackgroundSlider = () => {
           />
         </motion.div>
       ))}
-      <div className="absolute inset-0 bg-black/50" />
     </div>
   );
 };

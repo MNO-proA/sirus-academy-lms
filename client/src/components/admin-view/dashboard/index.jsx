@@ -573,7 +573,7 @@ const AdminDashboard = () => {
       <Card className="hover:shadow-lg transition-shadow duration-300">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-xl font-extrabold sm:text-2xl bg-gradient-to-r from-amber-600 to-zinc-900 bg-clip-text text-transparent">
-            Users Management
+            User Management
           </CardTitle>
           <div className="relative w-full max-w-xs">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />

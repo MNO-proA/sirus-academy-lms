@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useMemo, useState, useContext } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,25 +10,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DollarSign, Search, Users } from "lucide-react";
+import { DollarSign, Search, Users, Book } from "lucide-react";
 import { capitalizeWord, formatPrice } from "@/lib/utils";
 import { motion } from 'framer-motion';
+import { AuthContext } from "@/context/auth-context";
 
 const ITEMS_PER_PAGE = 5;
 
 function InstructorDashboard({ listOfCourses }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const { auth } = useContext(AuthContext);
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(price);
+  };
 
   // Memoize calculations to prevent unnecessary re-renders
-  const { totalProfit, totalStudents, studentList } = useMemo(() => {
+  const { totalProfit, totalStudents, studentList, totalCourses } = useMemo(() => {
     return listOfCourses.reduce(
       (acc, course) => {
-        const studentCount = course.students.length;
+        const studentCount = course.students?.length || 0;
+        // Increment course count by 1 for each course
+        acc.totalCourses += 1;
         acc.totalStudents += studentCount;
-        acc.totalProfit += course.pricing * studentCount;
+        acc.totalProfit += (course.pricing || 0) * studentCount;
         
-        course.students.forEach((student) => {
+        // Safely handle student data
+        course.students?.forEach((student) => {
           acc.studentList.push({
             courseTitle: course.title,
             studentName: student.studentName,
@@ -38,6 +51,7 @@ function InstructorDashboard({ listOfCourses }) {
         return acc;
       },
       {
+        totalCourses: 0,
         totalStudents: 0,
         totalProfit: 0,
         studentList: [],
@@ -45,23 +59,37 @@ function InstructorDashboard({ listOfCourses }) {
     );
   }, [listOfCourses]);
 
-  const config = [
-    {
-      icon: Users,
-      label: "Total Students",
-      value: totalStudents,
-      gradientFrom: "from-amber-600",
-      gradientTo: "to-zinc-900",
-    },
-    {
-      icon: DollarSign,
-      label: "Total Revenue",
-      value: formatPrice(totalProfit),
-      gradientFrom: "from-amber-600",
-      gradientTo: "to-zinc-900",
-    },
-  ];
+  const getConfigItems = () => {
+    const baseConfig = [
+      {
+        icon: Users,
+        label: "Total Students",
+        value: totalStudents,
+        gradientFrom: "from-amber-600",
+        gradientTo: "to-zinc-900",
+      },
+      {
+        icon: Book,
+        label: "Total Courses",
+        value: totalCourses,
+        gradientFrom: "from-amber-600",
+        gradientTo: "to-zinc-900",
+      }
+    ];
 
+    // Add revenue card only for admin users
+    if (auth?.user?.role === "admin") {
+      baseConfig.push({
+        icon: DollarSign,
+        label: "Total Revenue",
+        value: formatPrice(totalProfit),
+        gradientFrom: "from-amber-600",
+        gradientTo: "to-zinc-900",
+      });
+    }
+
+    return baseConfig;
+  };
   // Filter and paginate student list
   const filteredStudents = useMemo(() => {
     return studentList.filter(student => 
@@ -83,32 +111,32 @@ function InstructorDashboard({ listOfCourses }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {config.map((item, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
-          >
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {item.label}
-                </CardTitle>
-                <div className={`p-2 rounded-full bg-gradient-to-r ${item.gradientFrom} ${item.gradientTo} bg-opacity-10`}>
-                  <item.icon className="h-4 w-4 text-white" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold bg-gradient-to-r ${item.gradientFrom} ${item.gradientTo} bg-clip-text text-transparent`}>
-                  {item.value}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      {getConfigItems().map((item, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.1 }}
+        >
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                {item.label}
+              </CardTitle>
+              <div className={`p-2 rounded-full bg-gradient-to-r ${item.gradientFrom} ${item.gradientTo} bg-opacity-10`}>
+                <item.icon className="h-4 w-4 text-white" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className={`text-2xl font-bold bg-gradient-to-r ${item.gradientFrom} ${item.gradientTo} bg-clip-text text-transparent`}>
+                {item.value}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      ))}
+    </div>
 
       <Card className="hover:shadow-lg transition-shadow duration-300">
         <CardHeader className="flex flex-row items-center justify-between">

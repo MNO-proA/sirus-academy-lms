@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import LogoV from "../../../public/logo-v.png";
 import LogoH from "../../../public/logo-h.png";
+import { motion } from "framer-motion";
 import {
   Book,
   LogOut,
@@ -20,6 +21,7 @@ import {
   ChartNoAxesCombined,
 } from "lucide-react";
 import { capitalizeWord } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const InstructorDashboardPage = () => {
   const [activeTab, setActiveTab] = useState("courses"); // Changed default to "courses"
@@ -85,7 +87,7 @@ const InstructorDashboardPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation Bar */}
-      <nav className="bg-white border-b border-gray-200 fixed z-30 w-full">
+      <nav className="bg-white border-b border-gray-200 fixed z-30 w-full p-5">
         <div className="px-3 py-1 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start">
@@ -96,7 +98,7 @@ const InstructorDashboardPage = () => {
                 <Menu className="h-6 w-6" />
               </button>
               {/* <div className="text-xl font-bold flex items-center lg:ml-2.5"> */}
-              <img src={LogoH} alt="Sirius" className="h-24 w-24" />
+              {/* <img src={LogoH} alt="Sirius" className="h-24 w-24" /> */}
               {/* </div> */}
             </div>
             <p className="md:text-4xl font-extrabold text-3xl bg-gradient-to-r from-amber-600 to-zinc-900 bg-clip-text text-transparent">
@@ -137,31 +139,76 @@ const InstructorDashboardPage = () => {
         } lg:translate-x-0`}
       >
         <div className="h-full px-3 py-1 flex flex-col">
-          <img src={LogoV} alt="Sirius" className="h-40 w-40" />
+          <Link to={"/"}>
+            <img src={LogoV} alt="Sirius" className="h-40 w-40" />
+          </Link>
+
           <div className="flex-1 space-y-1">
-            {menuItems.map((menuItem) => (
-              <Button
-                key={menuItem.value}
-                variant={activeTab === menuItem.value ? "secondary" : "ghost"}
-                className={`w-full justify-start py-2 px-4 text-base font-normal rounded-lg transition-colors
-                  ${
-                    activeTab === menuItem.value
-                      ? "bg-indigo-50 text-[#B1771D]"
-                      : "text-gray-900 hover:bg-gray-100"
-                  }`}
-                onClick={() => handleMenuItemClick(menuItem)}
-              >
-                <menuItem.icon
-                  className={`w-6 h-6 transition-colors duration-200 ${
-                    activeTab === menuItem.value
-                      ? "text-[#B1771D]"
-                      : "text-gray-500"
-                  }`}
-                />
-                <span className="ml-3">{menuItem.label}</span>
-              </Button>
-            ))}
-          </div>
+    {menuItems.map((menuItem) => (
+      <motion.div
+        key={menuItem.value}
+        whileHover={{ scale: menuItem.value === 'logout' ? 1.02 : 1 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Button
+          variant={activeTab === menuItem.value ? "secondary" : "ghost"}
+          className={`w-full justify-start py-2 px-4 text-base font-normal rounded-lg transition-all duration-200
+            ${
+              menuItem.value === 'logout'
+                ? "hover:bg-red-50 group"
+                : activeTab === menuItem.value
+                ? "bg-indigo-50 text-[#B1771D]"
+                : "text-gray-900 hover:bg-gray-100"
+            }
+            ${
+              menuItem.value === 'logout' && activeTab === menuItem.value
+                ? "bg-red-50"
+                : ""
+            }
+          `}
+          onClick={() => handleMenuItemClick(menuItem)}
+        >
+          <menuItem.icon
+            className={`w-6 h-6 transition-colors duration-200 
+              ${
+                menuItem.value === 'logout'
+                  ? "text-red-500 group-hover:text-red-600"
+                  : activeTab === menuItem.value
+                  ? "text-[#B1771D]"
+                  : "text-gray-500"
+              }
+            `}
+          />
+          <span 
+            className={`ml-3 transition-colors duration-200
+              ${
+                menuItem.value === 'logout'
+                  ? "group-hover:text-red-600"
+                  : ""
+              }
+            `}
+          >
+            {menuItem.label}
+          </span>
+          
+          {menuItem.value === 'logout' && (
+            <motion.div
+              className="ml-auto"
+              initial={{ scale: 1 }}
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                repeatType: "reverse"
+              }}
+            >
+              <div className="h-2 w-2 rounded-full bg-red-500" />
+            </motion.div>
+          )}
+        </Button>
+      </motion.div>
+    ))}
+  </div>
           <div className="pt-4 border-t border-gray-200">
             <div className="px-4 py-3 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">Logged in as</p>
@@ -176,7 +223,7 @@ const InstructorDashboardPage = () => {
                 </span>
                 {/* </Button> */}
               </p>
-              <p className="text-xs font-thin text-gray-900 truncate">
+              <p className="text-xs text-gray-900 truncate">
                 Powered by Qodexcore
               </p>
             </div>

@@ -6,12 +6,14 @@ import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "./context/auth-context/index.jsx";
 import InstructorProvider from "./context/instructor-context/index.jsx";
 import StudentProvider from "./context/student-context/index.jsx";
+import { LoadingProvider } from '@/context/loading-context';
 import { Toaster } from "@/components/ui/sonner"
 
 
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
+  <LoadingProvider>
     <AuthProvider>
       <InstructorProvider>
         <StudentProvider>
@@ -20,5 +22,6 @@ createRoot(document.getElementById("root")).render(
         </StudentProvider>
       </InstructorProvider>
     </AuthProvider>
+    </LoadingProvider>
   </BrowserRouter>
 );
