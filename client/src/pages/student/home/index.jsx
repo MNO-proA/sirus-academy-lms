@@ -9,6 +9,7 @@ import { checkCoursePurchaseInfoService, fetchStudentViewCourseListService } fro
 import { AuthContext } from "@/context/auth-context";
 import { useNavigate } from "react-router-dom";
 import { formatPrice, capitalizeWord } from '@/lib/utils';
+import CourseGrid from './CourseGrid';
 
 const StudentHomePage = () => {
   const { studentViewCoursesList, setStudentViewCoursesList } = useContext(StudentContext);
@@ -160,9 +161,9 @@ const StudentHomePage = () => {
           animate={{ opacity: 1 }}
           className="text-2xl font-bold mb-6"
         >
-          Available Courses
+          Recent Courses
         </motion.h2>
-        <motion.div 
+        {/* <motion.div 
           variants={containerVariants}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
@@ -206,7 +207,8 @@ const StudentHomePage = () => {
               No Courses Found
             </motion.div>
           )}
-        </motion.div>
+        </motion.div> */}
+        <CourseGrid handleCourseNavigate={handleCourseNavigate}/>
       </section>
     </div>
   );

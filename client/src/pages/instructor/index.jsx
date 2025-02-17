@@ -101,11 +101,12 @@ const InstructorDashboardPage = () => {
               {/* <img src={LogoH} alt="Sirius" className="h-24 w-24" /> */}
               {/* </div> */}
             </div>
-            <p className="md:text-4xl font-extrabold text-3xl bg-gradient-to-r from-amber-600 to-zinc-900 bg-clip-text text-transparent">
-              Sirus Panel
+            <p className="md:text-4xl sm:text-2xl font-extrabold bg-gradient-to-r from-amber-600 to-zinc-900 bg-clip-text text-transparent tracking-normal sm:tracking-wide md:tracking-wider lg:tracking-widest">
+              S I R U S &nbsp; P A N E L
             </p>
+
             <div className="flex items-center">
-              <div className="hidden lg:flex items-center">
+              {/* <div className="hidden lg:flex items-center">
                 <div className="relative mx-4">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                     <Search className="h-5 w-5 text-gray-500" />
@@ -116,7 +117,7 @@ const InstructorDashboardPage = () => {
                     placeholder="Search..."
                   />
                 </div>
-              </div>
+              </div> */}
               <Button variant="ghost" className="p-2 rounded-lg ">
                 <Bell className="h-6 w-6" />
               </Button>
@@ -144,71 +145,67 @@ const InstructorDashboardPage = () => {
           </Link>
 
           <div className="flex-1 space-y-1">
-    {menuItems.map((menuItem) => (
-      <motion.div
-        key={menuItem.value}
-        whileHover={{ scale: menuItem.value === 'logout' ? 1.02 : 1 }}
-        transition={{ duration: 0.2 }}
-      >
-        <Button
-          variant={activeTab === menuItem.value ? "secondary" : "ghost"}
-          className={`w-full justify-start py-2 px-4 text-base font-normal rounded-lg transition-all duration-200
+            {menuItems.map((menuItem) => (
+              <motion.div
+                key={menuItem.value}
+                whileHover={{ scale: menuItem.value === "logout" ? 1.02 : 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Button
+                  variant={activeTab === menuItem.value ? "secondary" : "ghost"}
+                  className={`w-full justify-start py-2 px-4 text-base font-normal rounded-lg transition-all duration-200
             ${
-              menuItem.value === 'logout'
+              menuItem.value === "logout"
                 ? "hover:bg-red-50 group"
                 : activeTab === menuItem.value
                 ? "bg-indigo-50 text-[#B1771D]"
                 : "text-gray-900 hover:bg-gray-100"
             }
             ${
-              menuItem.value === 'logout' && activeTab === menuItem.value
+              menuItem.value === "logout" && activeTab === menuItem.value
                 ? "bg-red-50"
                 : ""
             }
           `}
-          onClick={() => handleMenuItemClick(menuItem)}
-        >
-          <menuItem.icon
-            className={`w-6 h-6 transition-colors duration-200 
+                  onClick={() => handleMenuItemClick(menuItem)}
+                >
+                  <menuItem.icon
+                    className={`w-6 h-6 transition-colors duration-200 
               ${
-                menuItem.value === 'logout'
+                menuItem.value === "logout"
                   ? "text-red-500 group-hover:text-red-600"
                   : activeTab === menuItem.value
                   ? "text-[#B1771D]"
                   : "text-gray-500"
               }
             `}
-          />
-          <span 
-            className={`ml-3 transition-colors duration-200
-              ${
-                menuItem.value === 'logout'
-                  ? "group-hover:text-red-600"
-                  : ""
-              }
+                  />
+                  <span
+                    className={`ml-3 transition-colors duration-200
+              ${menuItem.value === "logout" ? "group-hover:text-red-600" : ""}
             `}
-          >
-            {menuItem.label}
-          </span>
-          
-          {menuItem.value === 'logout' && (
-            <motion.div
-              className="ml-auto"
-              initial={{ scale: 1 }}
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ 
-                duration: 2,
-                repeat: Infinity,
-                repeatType: "reverse"
-              }}
-            >
-              <div className="h-2 w-2 rounded-full bg-red-500" />
-            </motion.div>
-          )}
-        </Button>
-      </motion.div>
-    ))}
-  </div>
+                  >
+                    {menuItem.label}
+                  </span>
+
+                  {menuItem.value === "logout" && (
+                    <motion.div
+                      className="ml-auto"
+                      initial={{ scale: 1 }}
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                      }}
+                    >
+                      <div className="h-2 w-2 rounded-full bg-red-500" />
+                    </motion.div>
+                  )}
+                </Button>
+              </motion.div>
+            ))}
+          </div>
           <div className="pt-4 border-t border-gray-200">
             <div className="px-4 py-3 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600 mb-2">Logged in as</p>

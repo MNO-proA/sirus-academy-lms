@@ -150,7 +150,7 @@ function AddNewCoursePage() {
       {/* Back Button */}
       <Button 
         variant="ghost" 
-        className="mb-4 text-gray-600 hover:text-gray-900"
+        className="mb-4 bg-gray-800 text-white hover:text-gray-900 "
         onClick={() => navigate("/instructor")}
       >
         <ChevronLeft className="h-4 w-4 mr-2" />

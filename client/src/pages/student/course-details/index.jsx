@@ -125,7 +125,7 @@ function StudentViewCourseDetailsPage() {
       // };
 
   return (
-    <div className="pt-20 mx-auto p-4">
+    <div className="pt-32 mx-auto p-4">
       <div className="bg-gray-900 text-white p-8 rounded-t-lg">
         <h1 className="text-3xl font-bold mb-4">
           {studentViewCourseDetails?.title}

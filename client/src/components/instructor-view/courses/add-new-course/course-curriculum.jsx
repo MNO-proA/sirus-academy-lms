@@ -475,7 +475,7 @@ function CourseCurriculum() {
                         placeholder={
                           curriculumItem.type === "youtube"
                             ? "Paste YouTube embed code here"
-                            : "Enter external URL (e.g., Google Forms, Lab URL)"
+                            : "Enter external URL (e.g. Google Forms, Lab URL)"
                         }
                         className="min-h-[100px] mb-4"
                         value={curriculumItem.videoUrl}
