@@ -9,6 +9,10 @@ const LectureSchema = new mongoose.Schema({
     type: String,
     enum: ['video', 'url', 'youtube'],
     default: 'video'
+  },
+  link_desc: {
+    type: String,
+    default: "", 
   }
 });
 
