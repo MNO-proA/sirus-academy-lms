@@ -115,6 +115,7 @@ function CourseCurriculum() {
         videoUrl: "",
         title: `Lecture ${courseCurriculumFormData.length + 1}`,
         freePreview: false,
+        link_desc: ""
       },
     ]);
   }
@@ -162,7 +163,15 @@ function CourseCurriculum() {
     setCourseCurriculumFormData(cpyCourseCurriculumFormData);
   }
 
-  // async function handleSingleLectureUpload(event, currentIndex) {
+  function handleLinkDescChange(event, currentIndex) {
+    let cpyCourseCurriculumFormData = [...courseCurriculumFormData];
+    cpyCourseCurriculumFormData[currentIndex] = {
+      ...cpyCourseCurriculumFormData[currentIndex],
+      link_desc: event.target.value,
+    };
+    setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+  }
+
   //   const selectedFile = event.target.files[0];
 
   //   if (selectedFile) {
@@ -313,33 +322,8 @@ function CourseCurriculum() {
     <Card>
       <CardHeader className="flex flex-row justify-between">
         <CardTitle>Create Course Curriculum</CardTitle>
-        {/* <div className="flex gap-2">
-          <Input
-            type="file"
-            ref={bulkUploadInputRef}
-            accept="video/*"
-            multiple
-            className="hidden"
-            id="bulk-media-upload"
-            onChange={handleMediaBulkUpload}
-          />
-          <Button
-            variant="outline"
-            className="cursor-pointer"
-            onClick={handleOpenBulkUploadDialog}
-          >
-            <Upload className="w-4 h-5 mr-2" />
-            Bulk Upload
-          </Button>
-        </div> */}
       </CardHeader>
       <CardContent>
-        {/* <Button
-          disabled={!isCourseCurriculumFormDataValid() || mediaUploadProgress}
-          onClick={handleNewLecture}
-        >
-          Add Lecture
-        </Button> */}
         {mediaUploadProgress && (
           <MediaProgressbar
             isMediaUploading={mediaUploadProgress}
@@ -428,7 +412,7 @@ function CourseCurriculum() {
                       <div className="relative">
                         {curriculumItem.isUploading ? (
                           <div className="flex justify-center items-center my-4">
-                            <Loader className="animate-spin h-8 w-8 text-blue-600" />
+                            <Loader className="animate-spin h-8 w-8 text-gray-800" />
                           </div>
                         ) : (
                           <>
@@ -481,6 +465,16 @@ function CourseCurriculum() {
                         value={curriculumItem.videoUrl}
                         onChange={(event) => handleUrlChange(event, index)}
                       />
+                      <Textarea
+                      placeholder={
+                        curriculumItem.type === "youtube"
+                          ? "Write a short instruction for your live session"
+                          : "Write a short instruction for your external link"
+                      }
+                      className="min-h-[100px] mb-4"
+                      value={curriculumItem.link_desc}
+                      onChange={(event) => handleLinkDescChange(event, index)}
+                    />
                       <ContentPreview
                         type={curriculumItem.type}
                         url={curriculumItem.videoUrl}

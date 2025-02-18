@@ -155,7 +155,7 @@ const StudentHomePage = () => {
         </motion.div>
       </section> */}
 
-      <section ref={ref} className="py-8 px-4 lg:px-8">
+      <section ref={ref} className="mb-36 py-8 px-4 lg:px-8">
         <motion.h2 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

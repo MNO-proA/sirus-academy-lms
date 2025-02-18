@@ -239,7 +239,7 @@ function StudentViewCourseProgressPage() {
   return (
     <div className="flex flex-col h-screen bg-[#1c1d1f] text-white">
       {showConfetti && <Confetti />}
-      <div className="flex items-center justify-between p-4 bg-[#1c1d1f] border-b border-gray-700">
+      <div className="mb-2 flex items-center justify-between p-4 bg-[#1c1d1f] border-b border-gray-700">
         <div className="flex items-center space-x-4">
           <Button
             onClick={handleBackToMyCourses}
@@ -304,26 +304,39 @@ function StudentViewCourseProgressPage() {
             </div>
           )}
 
-          <div className="p-6 bg-[#1c1d1f]">
+          <div className="p-6 mb-40 bg-[#1c1d1f]">
             <h2 className="text-2xl font-bold mb-4">{currentLecture?.title}</h2>
+
             {(currentLecture?.type === "url" ||
               currentLecture?.type === "youtube") && (
-              <Button
-                onClick={handleMarkAsComplete}
-                disabled={isMarkingComplete || isAlreadyViewed}
-                className="flex items-center gap-2 hover:scale-105 transition-transform duration-200"
-              >
-                {isMarkingComplete ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Check className="h-4 w-4" />
-                )}
-                {isAlreadyViewed
-                  ? "Completed"
-                  : isMarkingComplete
-                  ? "Marking as Complete..."
-                  : "Mark as Complete"}
-              </Button>
+              <>
+                <Button
+                  onClick={handleMarkAsComplete}
+                  disabled={isMarkingComplete || isAlreadyViewed}
+                  className="mb-4 flex items-center gap-2 hover:scale-105 transition-transform duration-200"
+                >
+                  {isMarkingComplete ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Check className="h-4 w-4" />
+                  )}
+                  {isAlreadyViewed
+                    ? "Completed"
+                    : isMarkingComplete
+                    ? "Marking as Complete..."
+                    : "Mark as Complete"}
+                </Button>
+                {currentLecture?.link_desc.length > 0 ? (
+                  <>
+                  <h2 className="text-2xl font-bold mb-4">
+                    Instructions
+                  </h2>
+                  <p className="text-white text-xs">
+                  {currentLecture?.link_desc }
+                  </p>
+                  </>
+                ) : null}
+              </>
             )}
           </div>
         </div>

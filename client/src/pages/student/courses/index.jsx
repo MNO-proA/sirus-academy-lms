@@ -157,7 +157,7 @@ function StudentViewCoursesPage() {
   };
 
   return (
-    <div className="pt-32 container mx-auto p-4">
+    <div className="mb-24 pt-32 container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">
         {/* <Link 
     to="/academy/home" 

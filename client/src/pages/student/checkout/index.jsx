@@ -1,8 +1,8 @@
+/* eslint-disable react/prop-types */
 import { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { PaymentForm, CreditCard, GooglePay, ApplePay } from 'react-square-web-payments-sdk';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CreditCard as CreditCardIcon, Wallet, Shield, Clock, Loader2 } from 'lucide-react';
@@ -59,14 +59,14 @@ const PaymentFormWrapper = ({ courseDetails, isProcessing, setIsProcessing }) =>
                 buttonProps={{
                   className: "w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 rounded-lg transition-all duration-200 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed",
                   disabled: isProcessing,
-                  children: isProcessing ? (
-                    <div className="flex items-center justify-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Processing...
-                    </div>
-                  ) : (
-                    "Pay"
-                  ),
+                  // children: isProcessing ? (
+                  //   <div className="flex items-center justify-center gap-2">
+                  //     <Loader2 className="w-4 h-4 animate-spin" />
+                  //     Processing...
+                  //   </div>
+                  // ) : (
+                  //   "Pay"
+                  // ),
                   onClick: (event) => {
                     event.preventDefault();
                     setIsProcessing(true);
@@ -107,7 +107,11 @@ const CheckoutPage = () => {
   const appId = import.meta.env.VITE_SQUARE_APP_ID;
   const locationId = import.meta.env.VITE_SQUARE_LOCATION_ID;
 
-  async function handlePaymentSuccess(token, error) {
+  async function handlePaymentSuccess(token, error) { 
+    
+    setIsProcessing(true);
+    console.log("Payment initiated");
+    
     if (error) {
       setIsProcessing(false);
       toast.error("Payment failed. Please try again.");
@@ -123,6 +127,8 @@ const CheckoutPage = () => {
     }
   
     try {
+     
+      console.log("Payment initiated");
       const paymentPayload = {
         userId: auth?.user?._id,
         userName: auth?.user?.userName,
@@ -144,6 +150,7 @@ const CheckoutPage = () => {
       const response = await createPaymentService(paymentPayload);
       
       if (response.success) {
+        setIsProcessing(false);
         toast.success("Payment successful! Redirecting to your course...");
         sessionStorage.setItem("currentOrderId", JSON.stringify(response?.data?.orderId));
         setTimeout(() => {
@@ -175,7 +182,7 @@ const CheckoutPage = () => {
       initial="initial"
       animate="animate"
       variants={fadeIn}
-      className="pt-32 min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8"
+      className="mb-24 pt-32 min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8"
     >
       <div className="max-w-4xl mx-auto">
         <motion.h1 
@@ -260,8 +267,17 @@ const CheckoutPage = () => {
                     setIsProcessing={setIsProcessing}
                   />
                 </PaymentForm>
+
+                {
+                  isProcessing && (
+                    <div className="flex items-center justify-center gap-2 mt-6">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Processing...
+                    </div>
+                  )
+                }
                 
-                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <Shield className="w-4 h-4" />
                     <span>Secure payment powered by Square</span>

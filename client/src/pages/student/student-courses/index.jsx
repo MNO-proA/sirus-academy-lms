@@ -106,7 +106,7 @@ function StudentCoursesPage() {
         variants={containerVariants}
         initial="hidden"
         animate={inView ? "visible" : "hidden"}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        className="mb-24 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
       >
         {studentBoughtCoursesList && studentBoughtCoursesList.length > 0 ? (
           studentBoughtCoursesList.map((course) => (
